@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class Migrate {
     private final UserRepository userRepository;
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin")
     public ResponseEntity<?> migrate() {
         Optional<User> user = userRepository.findByUsername("Parzival");
