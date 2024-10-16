@@ -165,6 +165,7 @@ public class AuthenticationService {
             login.get().setRefreshToken(generatedRefreshToken);
             loginRepository.save(login.get());
 
+
             String createdToken = "refresh : " + user.get().getUsername() + "/" + role + "/" + generatedAccessToken;
             log.info(createdToken);
 
