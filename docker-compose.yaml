@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgresDB
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: sire
+      POSTGRES_PASSWORD: 32h3fd
+      POSTGRES_DB: ASMS
+
+  quiz:
+    container_name: ASMS
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    env_file:
+      - ./.env.local
+    depends_on:
+      - postgres
+
