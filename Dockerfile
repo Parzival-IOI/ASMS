@@ -5,6 +5,6 @@ RUN mvn clean package -DskipTests
 
 FROM openjdk:21-jdk
 WORKDIR /app
-COPY --from=build /app/target/asms-0.0.1-SNAPSHOT.jar asms.jar
+COPY --from=build /app/target/ASMS-0.0.1-SNAPSHOT.jar asms.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar","asms.jar"]
