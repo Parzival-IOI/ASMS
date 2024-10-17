@@ -18,7 +18,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public abstract class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private long id;
     @CreatedDate
     @Column(updatable = false, nullable = false)
     private Date createdAt;

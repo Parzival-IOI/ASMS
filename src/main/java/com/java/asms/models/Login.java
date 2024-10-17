@@ -17,7 +17,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Login extends BaseEntity {
-    private int userId;
+    private long userId;
     @Column(columnDefinition="TEXT")
     private String refreshToken;
 }

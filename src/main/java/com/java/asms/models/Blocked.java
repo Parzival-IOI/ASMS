@@ -18,7 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Blocked extends BaseEntity {
-    private int userId;
+    private long userId;
     @Column(nullable = false)
     private int attempt;
     @Column(nullable = false)
