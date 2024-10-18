@@ -7,9 +7,9 @@ services:
     volumes:
       - ./db:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: sire
-      POSTGRES_PASSWORD: 32h3fd
-      POSTGRES_DB: ASMS
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 2003
+      POSTGRES_DB: group1_database
 
   quiz:
     container_name: ASMS
