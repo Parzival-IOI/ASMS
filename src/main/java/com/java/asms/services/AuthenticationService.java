@@ -3,16 +3,13 @@ package com.java.asms.services;
 import com.java.asms.configs.JwtTimeProperties;
 import com.java.asms.dtos.authentication.LoginRequest;
 import com.java.asms.dtos.authentication.TokenResponse;
-import com.java.asms.models.Blocked;
 import com.java.asms.models.Login;
-import com.java.asms.models.User;
-import com.java.asms.repositories.BlockedRepository;
 import com.java.asms.repositories.LoginRepository;
-import com.java.asms.repositories.UserRepository;
 import com.java.asms.utils.ResException;
 import java.security.Principal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -34,43 +31,35 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class AuthenticationService {
     private final JwtEncoder jwtEncoder;
-    private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
-    private final BlockedRepository blockedRepository;
     private final LoginRepository loginRepository;
     private final JwtTimeProperties jwtTimeProperties;
 
     public TokenResponse login(LoginRequest loginRequest) throws Exception {
 
         log.info(loginRequest.username());
-        Optional<User> user = userRepository.findByUsername(loginRequest.username());
+        Optional<Login> login = loginRepository.findByUsername(loginRequest.username());
 
-        if(user.isPresent()) {
-            if(!new BCryptPasswordEncoder().matches(loginRequest.password(), user.get().getPassword())) {
-                Optional<Blocked> blockedUserModel = blockedRepository.findByUserId(user.get().getId());
-                if(blockedUserModel.isPresent()) {
-                    int attempts = blockedUserModel.get().getAttempt();
-                    if(attempts > 5) {
-                        throw new ResException("Attempt limit exceeded", HttpStatus.LOCKED);
+        if(login.isPresent()) {
+            if(!new BCryptPasswordEncoder().matches(loginRequest.password(), login.get().getPassword())) {
+
+                    if(login.get().getAttempt() > 5 || login.get().getIsBlocked()) {
+                        return getTokenResponse(loginRequest, login);
                     } else {
-                        blockedUserModel.get().setAttempt(attempts + 1);
-                        blockedRepository.save(blockedUserModel.get());
+                        if(login.get().getAttempt() == 5) {
+                            Date bd = Date.from(Instant.now().plus(1, ChronoUnit.MINUTES));
+                            login.get().setIsBlocked(true);
+                            login.get().setBlockedDate(bd);
+                        }
+                        login.get().setAttempt(login.get().getAttempt() + 1);
+                        loginRepository.save(login.get());
                     }
-                } else {
-                    blockedRepository.save(
-                            Blocked.builder()
-                                    .userId(user.get().getId())
-                                    .attempt(1)
-                                    .build()
-                    );
-                }
+
                 throw new ResException("Wrong Username / Password", HttpStatus.BAD_REQUEST);
             }
             else {
-                Optional<Blocked> blockedUserModel = blockedRepository.findByUserId(user.get().getId());
-                if(blockedUserModel.isPresent()) {
-                    blockedUserModel.get().setAttempt(0);
-                    blockedRepository.save(blockedUserModel.get());
+                if(login.get().getAttempt() > 5 || login.get().getIsBlocked()) {
+                    return getTokenResponse(loginRequest, login);
                 }
             }
 
@@ -104,18 +93,9 @@ public class AuthenticationService {
             String createdToken = "Login : " + authentication.getName() + "/" + role + "/" + generatedAccessToken;
             log.info(createdToken);
 
-            Optional<Login> login = loginRepository.findByUserId(user.get().getId());
-            if(login.isPresent()) {
-                login.get().setRefreshToken(generatedRefreshToken);
-                loginRepository.save(login.get());
-            } else {
-                loginRepository.save(
-                        Login.builder()
-                                .userId(user.get().getId())
-                                .refreshToken(generatedRefreshToken)
-                                .build()
-                );
-            }
+
+            login.get().setRefreshToken(generatedRefreshToken);
+            loginRepository.save(login.get());
 
             return TokenResponse.builder()
                     .accessToken(generatedAccessToken)
@@ -125,27 +105,38 @@ public class AuthenticationService {
         throw new ResException("Wrong Username / Password", HttpStatus.BAD_REQUEST);
     }
 
+    private TokenResponse getTokenResponse(LoginRequest loginRequest, Optional<Login> login) throws Exception {
+        Date currentDate = new Date();
+        if(login.get().getBlockedDate().before(currentDate)) {
+            login.get().setAttempt(0);
+            login.get().setIsBlocked(false);
+            loginRepository.save(login.get());
+            return this.login(loginRequest);
+        }
+        throw new ResException("Attempt limit exceeded", HttpStatus.LOCKED);
+    }
+
     public TokenResponse refreshToken(Principal principal, Jwt jwt) throws Exception {
-        Optional<User> user = userRepository.findByUsername(principal.getName());
-        if(user.isPresent()) {
-            Optional<Login> login = loginRepository.findByUserId(user.get().getId());
-            if(login.isPresent()) {
-                if(!login.get().getRefreshToken().equals(jwt.getTokenValue())) {
-                    throw new ResException("Refresh Token is not valid", HttpStatus.BAD_REQUEST);
-                }
-            }
-            else {
-                throw new ResException("Invalid Refresh Token", HttpStatus.BAD_REQUEST);
+        Optional<Login> login = loginRepository.findByUsername(principal.getName());
+        if(login.isPresent()) {
+
+            if(!login.get().getRefreshToken().equals(jwt.getTokenValue())) {
+                throw new ResException("Refresh Token is not valid", HttpStatus.BAD_REQUEST);
             }
 
             Instant now = Instant.now();
-            String role = user.get().getRole().getValue();
+            String role;
+            if (login.get().getIsStudent()) {
+                role = "STUDENT";
+            } else {
+                role = login.get().getUser().getRole().getValue();
+            }
             //access token
             JwtClaimsSet accessToken = JwtClaimsSet.builder()
                     .issuer("self")
                     .issuedAt(now)
                     .expiresAt(now.plusSeconds(jwtTimeProperties.access()* 60L))
-                    .subject(user.get().getUsername())
+                    .subject(login.get().getUsername())
                     .claim("role", "ROLE_" + role)
                     .build();
 
@@ -154,7 +145,7 @@ public class AuthenticationService {
                     .issuer("self")
                     .issuedAt(now)
                     .expiresAt(now.plus(jwtTimeProperties.refresh(), ChronoUnit.HOURS))
-                    .subject(user.get().getUsername())
+                    .subject(login.get().getUsername())
                     .claim("role", "ROLE_REFRESH_TOKEN")
                     .claim("token", "refresh")
                     .build();
@@ -165,7 +156,7 @@ public class AuthenticationService {
             login.get().setRefreshToken(generatedRefreshToken);
             loginRepository.save(login.get());
 
-            String createdToken = "refresh : " + user.get().getUsername() + "/" + role + "/" + generatedAccessToken;
+            String createdToken = "refresh : " + login.get().getUsername() + "/" + role + "/" + generatedAccessToken;
             log.info(createdToken);
 
             return TokenResponse.builder()

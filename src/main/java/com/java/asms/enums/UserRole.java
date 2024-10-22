@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public enum UserRole {
     ADMIN("ADMIN"),
-    STAFF("STAFF"),
-    TEACHER("TEACHER"),
-    STUDENT("STUDENT"),
-    PARENT("PARENT");
+    HR("HR"),
+    ACCOUNT("ACCOUNT"),
+    REGISTRAR("REGISTRAR"),
+    TEACHER("TEACHER");
 
     private final String value;
     UserRole(String value) {
