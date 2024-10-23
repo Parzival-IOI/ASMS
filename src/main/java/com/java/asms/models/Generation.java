@@ -1,5 +1,6 @@
 package com.java.asms.models;
 
+import com.java.asms.enums.GenerationStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,29 +19,27 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Builder
-@Entity(name="majors")
+@Entity(name="generations")
 @AllArgsConstructor
 @NoArgsConstructor
 @Table
 @Getter
 @Setter
-public class Major extends BaseEntity {
+public class Generation extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    private String name;
-    private String price;
-    @Column(name = "study_year")
-    private int studyYear;
-    private String description;
+
+    @Column(name = "generation_status")
+    private GenerationStatus generationStatus;
+
+    @Column(name = "expected_number")
+    private int expectedNumber;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "generation")
+    private List<Year> years;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "department_id", referencedColumnName = "id")
-    private Department department;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "major")
-    private List<Generation> generations;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "major")
-    private List<Subject> subject;
+    @JoinColumn(name = "major_id", referencedColumnName = "id")
+    private Major major;
 }

@@ -7,9 +7,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.Date;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -44,5 +46,11 @@ public class Student extends BaseEntity {
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "student", orphanRemoval = true)
     private Login login;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "student")
+    private List<RegisterYear> registerYears;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "student")
+    private List<StudentYear> studentYears;
 
 }

@@ -54,4 +54,10 @@ public class User extends BaseEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "checker", orphanRemoval = true)
     private List<Event> eventsChecker;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "maker", orphanRemoval = true)
+    private List<TransactionStudentYear> transactionsMaker;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "checker", orphanRemoval = true)
+    private List<TransactionStudentYear> transactionsChecker;
+
 }

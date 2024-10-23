@@ -14,9 +14,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
     @CreatedDate
-    @Column(updatable = false, nullable = false)
+    @Column(updatable = false, nullable = false, name = "created_at")
     private Date createdAt;
     @LastModifiedDate
-    @Column(nullable = false)
+    @Column(nullable = false, name = "updated_at")
     private Date updatedAt;
 }

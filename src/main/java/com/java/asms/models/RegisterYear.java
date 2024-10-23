@@ -8,9 +8,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.util.List;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,29 +17,27 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Builder
-@Entity(name="majors")
+@Entity(name="register_year")
 @AllArgsConstructor
 @NoArgsConstructor
 @Table
 @Getter
 @Setter
-public class Major extends BaseEntity {
+public class RegisterYear extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    private String name;
-    private String price;
-    @Column(name = "study_year")
-    private int studyYear;
-    private String description;
+    @Column(name = "is_passed")
+    private Boolean isPassed;
+    private long score;
+    @Column(name = "date_exam")
+    private Date dateExam;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "department_id", referencedColumnName = "id")
-    private Department department;
+    @JoinColumn(name = "student_id", referencedColumnName = "id")
+    private Student student;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "major")
-    private List<Generation> generations;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "major")
-    private List<Subject> subject;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "year_id", referencedColumnName = "id")
+    private Year year;
 }
