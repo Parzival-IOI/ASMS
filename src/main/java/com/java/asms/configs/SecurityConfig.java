@@ -1,6 +1,7 @@
 package com.java.asms.configs;
 
 
+import com.java.asms.enums.UserRole;
 import com.java.asms.services.UserImplementService;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -73,7 +74,7 @@ public class SecurityConfig {
                         .requestMatchers("/migrate/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/auth/refresh").hasRole("REFRESH_TOKEN")
-//                        .requestMatchers("/api/user/**").hasRole(UserRoleEnum.ADMIN.getValue())
+                        .requestMatchers("/api/department/**").hasRole(UserRole.ADMIN.getValue())
 //                        .requestMatchers("/api/mail/**").hasRole(UserRoleEnum.ADMIN.getValue())
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
