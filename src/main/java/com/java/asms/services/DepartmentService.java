@@ -51,9 +51,6 @@ public class DepartmentService {
 
         Department savedDepartment = departmentRepository.save(department);
 
-//        DepartmentResponse departmentResponse = new DepartmentResponse(savedDepartment.getId(),savedDepartment.getName());
-//        departmentResponse.setId(savedDepartment.getId());
-//        departmentResponse.setName(savedDepartment.getName());
         DepartmentResponse departmentResponse = new DepartmentResponse();
         departmentResponse.responseDepartment(savedDepartment);
         return departmentResponse;

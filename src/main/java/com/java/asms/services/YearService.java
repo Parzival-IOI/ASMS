@@ -93,7 +93,7 @@ public class YearService {
         year.setStartDate(yearRequest.getStartDate());
         year.setEndDate(yearRequest.getEndDate());
 
-        if (yearRequest.getGenerationId() > 0) {  // Assuming generationId is positive if valid
+        if (yearRequest.getGenerationId() > 0) {
             Generation generation = generationRepository.findById((int) yearRequest.getGenerationId())
                     .orElseThrow(() -> new RuntimeException("Generation with ID " + yearRequest.getGenerationId() + " not found"));
             year.setGeneration(generation);
