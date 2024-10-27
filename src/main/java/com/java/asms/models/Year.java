@@ -47,16 +47,16 @@ public class Year extends BaseEntity {
     @Column(columnDefinition = "text")
     private String description;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "generation_id", referencedColumnName = "id")
     private Generation generation;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "year")
+    @OneToMany( mappedBy = "year")
     private List<SubjectYear> subjectYear;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "year")
+    @OneToMany( mappedBy = "year")
     private List<RegisterYear> registerYears;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "year")
+    @OneToMany( mappedBy = "year")
     private List<StudentYear> studentYears;
 }
