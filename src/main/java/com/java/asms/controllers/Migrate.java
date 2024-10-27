@@ -1,9 +1,12 @@
 package com.java.asms.controllers;
 
+import com.java.asms.enums.LoginStatus;
 import com.java.asms.enums.UserRole;
-import com.java.asms.enums.UserStatus;
+import com.java.asms.models.Login;
 import com.java.asms.models.User;
+import com.java.asms.repositories.LoginRepository;
 import com.java.asms.repositories.UserRepository;
+import java.util.Date;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,26 +22,39 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 
 public class Migrate {
+    private final LoginRepository loginRepository;
     private final UserRepository userRepository;
 
 //    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin")
     public ResponseEntity<?> migrate() {
-        Optional<User> user = userRepository.findByUsername("Parzival");
+        Optional<Login> login = loginRepository.findByUsername("Parzival");
 
-        if(user.isPresent())
+        if(login.isPresent())
             return new ResponseEntity<>("Already Migrated", HttpStatus.BAD_REQUEST);
 
         User admin = User.builder()
                 .firstName("Parzival")
-                .lastName("LOL")
-                .username("Parzival")
-                .status(UserStatus.ENABLE)
-                    .password(new BCryptPasswordEncoder().encode("admin"))
+                .lastName("IOI")
                 .role(UserRole.ADMIN)
+                .dob(new Date())
+                .phone("000000000")
+                .nationalId("00000000000")
+                .address("HO")
                 .build();
-
         userRepository.save(admin);
+
+        Login adminLogin = Login.builder()
+                .user(admin)
+                .username("Parzival")
+                .password(new BCryptPasswordEncoder().encode("admin"))
+                .status(LoginStatus.ENABLE)
+                .isBlocked(false)
+                .isStudent(false)
+                .attempt(0)
+                .build();
+        loginRepository.save(adminLogin);
+
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 

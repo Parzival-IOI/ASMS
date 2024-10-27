@@ -7,11 +7,20 @@ services:
     volumes:
       - ./db:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 2003
-      POSTGRES_DB: group1_database
-
-  quiz:
+      POSTGRES_USER: sire
+      POSTGRES_PASSWORD: 32h3fd
+      POSTGRES_DB: asms
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: Test@asms.com
+      PGADMIN_DEFAULT_PASSWORD: 5tusk7mam$
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin
+  asms:
     container_name: ASMS
     build:
       context: .
