@@ -41,6 +41,6 @@ public class Major extends BaseEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "major")
     private List<Generation> generations;
 
-//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "major")
-//    private List<Subject> subject;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "major")
+    private List<Subject> subject;
 }
