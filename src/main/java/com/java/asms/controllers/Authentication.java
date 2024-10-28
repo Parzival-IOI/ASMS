@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class Authentication {
     private final AuthenticationService authenticationService;
 
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {

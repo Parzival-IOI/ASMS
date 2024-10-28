@@ -74,7 +74,7 @@ public class SecurityConfig {
                         .requestMatchers("/migrate/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/auth/refresh").hasRole("REFRESH_TOKEN")
-                        .requestMatchers("/api/department/**").hasRole(UserRole.ADMIN.getValue())
+                        .requestMatchers("/api/v1/**").hasRole(UserRole.ADMIN.getValue())
 //                        .requestMatchers("/api/mail/**").hasRole(UserRoleEnum.ADMIN.getValue())
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
