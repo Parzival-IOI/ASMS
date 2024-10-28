@@ -25,16 +25,16 @@ public class Migrate {
     private final LoginRepository loginRepository;
     private final UserRepository userRepository;
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin")
     public ResponseEntity<?> migrate() {
-        Optional<Login> login = loginRepository.findByUsername("Parzival");
+        Optional<Login> login = loginRepository.findByUsername("Vichhai");
 
         if(login.isPresent())
             return new ResponseEntity<>("Already Migrated", HttpStatus.BAD_REQUEST);
 
         User admin = User.builder()
-                .firstName("Parzival")
+                .firstName("Vichhai")
                 .lastName("IOI")
                 .role(UserRole.ADMIN)
                 .dob(new Date())
@@ -46,8 +46,8 @@ public class Migrate {
 
         Login adminLogin = Login.builder()
                 .user(admin)
-                .username("Parzival")
-                .password(new BCryptPasswordEncoder().encode("admin"))
+                .username("string")
+                .password(new BCryptPasswordEncoder().encode("string"))
                 .status(LoginStatus.ENABLE)
                 .isBlocked(false)
                 .isStudent(false)

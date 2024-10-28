@@ -31,7 +31,7 @@ public class Subject extends BaseEntity {
     private String name;
     private String description;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "major_id", referencedColumnName = "id")
     private Major major;
 
