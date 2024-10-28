@@ -43,10 +43,10 @@ public class AuthenticationService {
         if(login.isPresent()) {
             if(!new BCryptPasswordEncoder().matches(loginRequest.password(), login.get().getPassword())) {
 
-                    if(login.get().getAttempt() > 5 || login.get().getIsBlocked()) {
+                    if(login.get().getAttempt() > jwtTimeProperties.retries() || login.get().getIsBlocked()) {
                         return getTokenResponse(loginRequest, login);
                     } else {
-                        if(login.get().getAttempt() == 5) {
+                        if(login.get().getAttempt() == jwtTimeProperties.retries()) {
                             Date bd = Date.from(Instant.now().plus(1, ChronoUnit.MINUTES));
                             login.get().setIsBlocked(true);
                             login.get().setBlockedDate(bd);
@@ -58,7 +58,7 @@ public class AuthenticationService {
                 throw new ResException("Wrong Username / Password", HttpStatus.BAD_REQUEST);
             }
             else {
-                if(login.get().getAttempt() > 5 || login.get().getIsBlocked()) {
+                if(login.get().getAttempt() > jwtTimeProperties.retries() || login.get().getIsBlocked()) {
                     return getTokenResponse(loginRequest, login);
                 }
             }
