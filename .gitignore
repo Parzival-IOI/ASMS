@@ -36,3 +36,8 @@ build/
 .env.local
 db
 pgadmin
+
+### jwt key prevention ###
+private.pem
+public.pem
+keypair.pem

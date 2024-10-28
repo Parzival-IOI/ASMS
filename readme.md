@@ -26,9 +26,12 @@
     
     ACCESS_MINUTES=
     REFRESH_HOURS=
+    RETRIES=
     
     PUBLIC_KEY=
     PRIVATE_KEY=
+
+    DEBUG=
 
 ### .env.local (Supporting Docker)
 
@@ -38,9 +41,12 @@
     
     ACCESS_MINUTES=
     REFRESH_HOURS=
+    RETRIES=
     
     PUBLIC_KEY=
     PRIVATE_KEY=
+
+    DEBUG=
 
 
 > #### Note:
