@@ -80,7 +80,6 @@ public class SubjectYearController {
         }
     }
 
-
     @DeleteMapping("/delete/subject-yearBy/{id}")
     public ResponseEntity<APIDeResponse> deleteSubjectYearById(@PathVariable long id) {
         try {
@@ -100,6 +99,5 @@ public class SubjectYearController {
                             .build());
         }
     }
-
 
 }

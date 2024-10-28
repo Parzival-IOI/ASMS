@@ -8,12 +8,14 @@ import com.java.asms.models.Department;
 import com.java.asms.services.DepartmentService;
 import com.java.asms.utils.ResException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/department")
@@ -22,58 +24,9 @@ import java.time.LocalDateTime;
 public class DepartmentController {
     private final DepartmentService departmentService;
 
-//    @GetMapping("/findOne")
-//    public ResponseEntity<?> findOneDepartment(@RequestBody long id) {
-//        try {
-//            Department department = departmentService.findOne(id);
-//            return new ResponseEntity<>(department, HttpStatus.OK);
-//        } catch (ResException ex) {
-//            return new ResponseEntity<>(ex.getMessage(), ex.getCode());
-//        } catch (Exception ex) {
-//            return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
-//    @PutMapping("/update")
-//    public ResponseEntity<?> updateDepartment(@RequestBody Department department) {
-//        try {
-//            departmentService.update(department);
-//            return new ResponseEntity<>("success", HttpStatus.OK);
-//        } catch (ResException ex) {
-//            return new ResponseEntity<>(ex.getMessage(), ex.getCode());
-//        } catch (Exception ex) {
-//            return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
-//    @DeleteMapping("/delete")
-//    public ResponseEntity<?> deleteDepartment(@RequestBody long id) {
-//        try {
-//            departmentService.delete(id);
-//            return new ResponseEntity<>("success", HttpStatus.OK);
-//        } catch (ResException ex) {
-//            return new ResponseEntity<>(ex.getMessage(), ex.getCode());
-//        } catch (Exception ex) {
-//            return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
-//    @PostMapping("/save")
-//    public ResponseEntity<?> saveDepartment(@RequestBody DepartmentRequest department) {
-//        try {
-//            departmentService.insert(department);
-//            return new ResponseEntity<>("success", HttpStatus.OK);
-//        } catch (ResException ex) {
-//            return new ResponseEntity<>(ex.getMessage(), ex.getCode());
-//        } catch (Exception ex) {
-//            return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
     @PostMapping("/create/department")
     public ResponseEntity<APIResponse<Object>> createDepartment(@RequestBody DepartmentRequest departmentRequest) {
         DepartmentResponse departmentResponse = departmentService.createDepartment(departmentRequest);
-
         APIResponse<Object> apiResponse = APIResponse.builder()
                 .message("Created department successfully.")
                 .payload(departmentResponse)
@@ -121,5 +74,14 @@ public class DepartmentController {
         return ResponseEntity.accepted().body(apiDeResponse);
     }
 
+//    @GetMapping("/getAll/department")
+//    public ResponseEntity<APIResponse<Object>> getAllDepartment(
+//            @RequestParam(defaultValue = "0", required = false) Integer pageNo,
+//            @RequestParam(defaultValue = "5", required = false) Integer pageSize,
+//            @RequestParam(defaultValue = "id", required = false) String sortBy,
+//            @RequestParam(defaultValue = "DESC", required = false) Sort.Direction sortDirection
+//    ){
+//
+//    }
 
 }
