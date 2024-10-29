@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,31 +35,76 @@ public class RegisterYearController {
     }
 
     @GetMapping("/get/register-yearBy/{id}")
-    public ResponseEntity<APIResponse<Object>> getRegisterYearById(@PathVariable long id){
-        RegisterYearResponse registerYearResponse = registerYearService.getRegisterYearById(id);
-        APIResponse<Object> apiResponse = APIResponse.builder()
-                .message("Get register with id "+id+" successful .")
-                .payload(registerYearResponse)
-                .status(HttpStatus.OK)
-                .dateTime(LocalDateTime.now())
-                .build();
-        return ResponseEntity.ok(apiResponse);
+    public ResponseEntity<APIResponse<Object>> getRegisterYearById(@PathVariable long id) {
+        APIResponse<Object> apiResponse;
+        try {
+            RegisterYearResponse registerYearResponse = registerYearService.getRegisterYearById(id);
+            if (registerYearResponse == null) {
+                apiResponse = APIResponse.builder()
+                        .message("Register year with id " + id + " not found.")
+                        .status(HttpStatus.NOT_FOUND)
+                        .dateTime(LocalDateTime.now())
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
+            }
+            apiResponse = APIResponse.builder()
+                    .message("Get register with id " + id + " successful.")
+                    .payload(registerYearResponse)
+                    .status(HttpStatus.OK)
+                    .dateTime(LocalDateTime.now())
+                    .build();
+            return ResponseEntity.ok(apiResponse);
+
+        } catch (NoSuchElementException e) {
+            apiResponse = APIResponse.builder()
+                    .message("Register year with id " + id + " not found.")
+                    .status(HttpStatus.NOT_FOUND)
+                    .dateTime(LocalDateTime.now())
+                    .build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
+        } catch (RuntimeException e) {
+            apiResponse = APIResponse.builder()
+                    .message("An error occurred while fetching register year: " + e.getMessage())
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .dateTime(LocalDateTime.now())
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
+        }
     }
+
 
     @PutMapping("/update/register-year/{id}")
     public ResponseEntity<APIResponse<Object>> updateRegisterYearById(
             @PathVariable long id,
             @RequestBody RegisterYearRequest registerYearRequest
-    ){
-        RegisterYearResponse registerYearResponse = registerYearService.updateRegisterYearById(id,registerYearRequest);
-        APIResponse<Object> apiResponse = APIResponse.builder()
-                .message("Update register year with id "+id+" successful .")
-                .payload(registerYearResponse)
-                .status(HttpStatus.OK)
-                .dateTime(LocalDateTime.now())
-                .build();
-        return ResponseEntity.ok(apiResponse);
+    ) {
+        APIResponse<Object> apiResponse;
+        try {
+            RegisterYearResponse registerYearResponse = registerYearService.updateRegisterYearById(id, registerYearRequest);
+            apiResponse = APIResponse.builder()
+                    .message("Update register year with id " + id + " successful.")
+                    .payload(registerYearResponse)
+                    .status(HttpStatus.OK)
+                    .dateTime(LocalDateTime.now())
+                    .build();
+            return ResponseEntity.ok(apiResponse);
+        } catch (NoSuchElementException e) {
+            apiResponse = APIResponse.builder()
+                    .message("Register year with id " + id + " not found.")
+                    .status(HttpStatus.NOT_FOUND)
+                    .dateTime(LocalDateTime.now())
+                    .build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
+        } catch (RuntimeException e) {
+            apiResponse = APIResponse.builder()
+                    .message("An error occurred while updating register year: " + e.getMessage())
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .dateTime(LocalDateTime.now())
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
+        }
     }
+
 
     @DeleteMapping("/delete/register-yearBy/{id}")
     public ResponseEntity<APIDeResponse> deleteRegisterYearById(@PathVariable long id) {
