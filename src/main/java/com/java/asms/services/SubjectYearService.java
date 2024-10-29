@@ -12,7 +12,14 @@ import com.java.asms.repositories.SubjectYearRepository;
 import com.java.asms.repositories.YearRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -135,6 +142,46 @@ public class SubjectYearService {
         SubjectYear subjectYear = subjectYearRepository.findById((int) id)
                 .orElseThrow(() -> new RuntimeException("SubjectYear with ID " + id + " not found"));
         subjectYearRepository.delete(subjectYear);
+    }
+
+    public List<YearSubjectResponse> getAllSubjectYear(Integer pageNo, Integer pageSize, String sortBy, Sort.Direction sortDirection) {
+        Sort sort = Sort.by(sortDirection, sortBy);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+
+        Page<SubjectYear> subjectYearPage = subjectYearRepository.findAll(pageable);
+        List<SubjectYear> subjectYearList = subjectYearPage.getContent();
+
+        List<YearSubjectResponse> yearSubjectResponseList = new ArrayList<>();
+
+        for (SubjectYear subjectYear : subjectYearList) {
+            YearSubjectResponse yearSubjectResponse = new YearSubjectResponse();
+            yearSubjectResponse.setId(subjectYear.getId());
+
+            DTOSubjectYearResponse subjectResponse = new DTOSubjectYearResponse();
+            subjectResponse.setId(subjectYear.getSubject().getId());
+            subjectResponse.setName(subjectYear.getSubject().getName());
+            subjectResponse.setYear(subjectYear.getSubject().getYear());
+            subjectResponse.setDescription(subjectYear.getSubject().getDescription());
+
+            yearSubjectResponse.setSubject(subjectResponse);
+
+            DTOYearResponse yearResponse = new DTOYearResponse();
+            yearResponse.setId(subjectYear.getYear().getId());
+            yearResponse.setName(subjectYear.getYear().getName());
+            yearResponse.setStudentNumber(subjectYear.getYear().getStudentNumber());
+            yearResponse.setExpectedNumber(subjectYear.getYear().getExpectedNumber());
+            yearResponse.setYearStatus(subjectYear.getYear().getYearStatus());
+            yearResponse.setYear(subjectYear.getYear().getYear());
+            yearResponse.setStartDate(subjectYear.getYear().getStartDate());
+            yearResponse.setEndDate(subjectYear.getYear().getEndDate());
+            yearResponse.setDescription(subjectYear.getYear().getDescription());
+
+            yearSubjectResponse.setYear(yearResponse);
+
+            yearSubjectResponseList.add(yearSubjectResponse);
+        }
+
+        return yearSubjectResponseList;
     }
 
 }

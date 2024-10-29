@@ -74,14 +74,24 @@ public class DepartmentController {
         return ResponseEntity.accepted().body(apiDeResponse);
     }
 
-//    @GetMapping("/getAll/department")
-//    public ResponseEntity<APIResponse<Object>> getAllDepartment(
-//            @RequestParam(defaultValue = "0", required = false) Integer pageNo,
-//            @RequestParam(defaultValue = "5", required = false) Integer pageSize,
-//            @RequestParam(defaultValue = "id", required = false) String sortBy,
-//            @RequestParam(defaultValue = "DESC", required = false) Sort.Direction sortDirection
-//    ){
-//
-//    }
+    @GetMapping("/getAll/department")
+    public ResponseEntity<APIResponse<Object>> getAllDepartment(
+            @RequestParam(defaultValue = "0", required = false) Integer pageNo,
+            @RequestParam(defaultValue = "5", required = false) Integer pageSize,
+            @RequestParam(defaultValue = "id", required = false) String sortBy,
+            @RequestParam(defaultValue = "DESC", required = false) Sort.Direction sortDirection
+    ){
+
+        List<DepartmentResponse> departmentResponseList =
+                departmentService.getAllDepartment(pageNo,pageSize,sortBy,sortDirection);
+        APIResponse<Object> apiResponse = APIResponse.builder()
+                .message("Get all customer successful .")
+                .payload(departmentResponseList)
+                .status(HttpStatus.OK)
+                .dateTime(LocalDateTime.now())
+                .build();
+        return ResponseEntity.ok(apiResponse);
+
+    }
 
 }

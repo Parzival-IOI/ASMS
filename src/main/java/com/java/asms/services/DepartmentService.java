@@ -6,10 +6,16 @@ import com.java.asms.models.Department;
 import com.java.asms.repositories.DepartmentRepository;
 import com.java.asms.utils.ResException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -83,5 +89,20 @@ public class DepartmentService {
             throw new RuntimeException("Department not found with id: " + id);
         }
         departmentRepository.deleteById(id);
+    }
+
+    public List<DepartmentResponse> getAllDepartment(Integer pageNo, Integer pageSize, String sortBy, Sort.Direction sortDirection) {
+        Sort sort = Sort.by(sortDirection, sortBy);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<Department> departmentPage = departmentRepository.findAll(pageable);
+
+        List<Department> departmentList = departmentPage.getContent();
+        List<DepartmentResponse> departmentResponseList = new ArrayList<>();
+        for (Department department: departmentList){
+            DepartmentResponse departmentResponse = new DepartmentResponse();
+            departmentResponse.responseDepartment(department);
+            departmentResponseList.add(departmentResponse);
+        }
+        return departmentResponseList;
     }
 }

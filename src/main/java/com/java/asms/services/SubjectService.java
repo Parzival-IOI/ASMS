@@ -9,7 +9,14 @@ import com.java.asms.repositories.MajorRepository;
 import com.java.asms.repositories.SubjectRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -111,6 +118,31 @@ public class SubjectService {
             throw new RuntimeException("Subject with ID " + id + " not found");
         }
         subjectRepository.deleteById((int) id);
+    }
+
+    public List<SubjectResponse> getAllSubject(Integer pageNo, Integer pageSize, String sortBy, Sort.Direction sortDirection) {
+        Sort sort = Sort.by(sortDirection, sortBy);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+
+        Page<Subject> subjectPage = subjectRepository.findAll(pageable);
+        List<Subject> subjectList = subjectPage.getContent();
+
+        List<SubjectResponse> subjectResponseList = new ArrayList<>();
+        for (Subject subject : subjectList) {
+            SubjectResponse subjectResponse = new SubjectResponse();
+            subjectResponse.setId(subject.getId());
+            subjectResponse.setName(subject.getName());
+            subjectResponse.setDescription(subject.getDescription());
+            subjectResponse.setYear(subject.getYear());
+
+            GenerationMajorResponse majorResponse = new GenerationMajorResponse();
+            majorResponse.responseMajor(subject.getMajor());
+            subjectResponse.setMajor(majorResponse);
+
+            subjectResponseList.add(subjectResponse);
+        }
+
+        return subjectResponseList;
     }
 
 }

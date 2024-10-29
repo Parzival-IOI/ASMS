@@ -1,15 +1,24 @@
 package com.java.asms.services;
 
 import com.java.asms.dtos.dtoGeneration.generationResponse.GenerationResponse;
+import com.java.asms.dtos.dtoMajor.majorResponse.GenerationMajorResponse;
 import com.java.asms.dtos.dtoYear.requestYear.YearRequest;
 import com.java.asms.dtos.dtoYear.responseYear.YearResponse;
 import com.java.asms.models.Generation;
+import com.java.asms.models.Subject;
 import com.java.asms.models.Year;
 import com.java.asms.repositories.GenerationRepository;
 import com.java.asms.repositories.YearRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -126,6 +135,46 @@ public class YearService {
         Year year = yearRepository.findById((int) id)
                 .orElseThrow(() -> new RuntimeException("Year with ID " + id + " not found"));
         yearRepository.delete(year);
+    }
+
+    public List<YearResponse> getAllYear(Integer pageNo, Integer pageSize, String sortBy, Sort.Direction sortDirection) {
+        Sort sort = Sort.by(sortDirection, sortBy);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+
+        Page<Year> yearPage = yearRepository.findAll(pageable);
+        List<Year> yearList = yearPage.getContent();
+        List<YearResponse> yearResponseList = new ArrayList<>();
+
+        for (Year year : yearList) {
+            YearResponse yearResponse = new YearResponse();
+            yearResponse.setId(year.getId());
+            yearResponse.setName(year.getName());
+            yearResponse.setStudentNumber(year.getStudentNumber());
+            yearResponse.setExpectedNumber(year.getExpectedNumber());
+            yearResponse.setYearStatus(year.getYearStatus());
+            yearResponse.setYear(year.getYear());
+            yearResponse.setStartDate(year.getStartDate());
+            yearResponse.setEndDate(year.getEndDate());
+            yearResponse.setDescription(year.getDescription());
+
+            GenerationResponse generationResponse = new GenerationResponse();
+            generationResponse.setId(year.getGeneration().getId());
+            generationResponse.setExpectedNumber(year.getGeneration().getExpectedNumber());
+            generationResponse.setGenerationStatus(year.getGeneration().getGenerationStatus());
+            generationResponse.setCreatedAt(year.getGeneration().getCreatedAt());
+            generationResponse.setUpdatedAt(year.getGeneration().getUpdatedAt());
+
+            if (year.getGeneration().getMajor() != null) {
+                GenerationMajorResponse majorResponse = new GenerationMajorResponse();
+                majorResponse.responseMajor(year.getGeneration().getMajor());
+                generationResponse.setMajor(majorResponse);
+            }
+
+            yearResponse.setGeneration(generationResponse);
+            yearResponseList.add(yearResponse);
+        }
+
+        return yearResponseList;
     }
 
 }

@@ -6,11 +6,13 @@ import com.java.asms.dtos.dtoSubject.subjectRequest.SubjectRequest;
 import com.java.asms.dtos.dtoSubject.subjectResponse.SubjectResponse;
 import com.java.asms.services.SubjectService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/subject")
@@ -101,5 +103,21 @@ public class SubjectController {
         }
     }
 
+    @GetMapping("/getAll/Subject")
+    public ResponseEntity<APIResponse<Object>> getAllSubject(
+            @RequestParam(defaultValue = "0", required = false) Integer pageNo,
+            @RequestParam(defaultValue = "5", required = false) Integer pageSize,
+            @RequestParam(defaultValue = "Id", required = false) String sortBy,
+            @RequestParam(defaultValue = "DESC", required = false) Sort.Direction sortDirection
+    ){
+        List<SubjectResponse> subjectResponses= subjectService.getAllSubject(pageNo,pageSize,sortBy,sortDirection);
+        APIResponse<Object> apiResponse = APIResponse.builder()
+                .message("Get all successful.")
+                .payload(subjectResponses)
+                .status(HttpStatus.OK)
+                .dateTime(LocalDateTime.now())
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
 
 }
