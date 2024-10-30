@@ -33,11 +33,11 @@ public class RegisterYear extends BaseEntity {
     @Column(name = "date_exam")
     private Date dateExam;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "student_id", referencedColumnName = "id")
     private Student student;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "year_id", referencedColumnName = "id")
     private Year year;
 }

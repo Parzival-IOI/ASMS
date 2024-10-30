@@ -2,16 +2,20 @@ package com.java.asms.controllers;
 
 import com.java.asms.dtos.apiResponse.APIDeResponse;
 import com.java.asms.dtos.apiResponse.APIResponse;
+import com.java.asms.dtos.dtoMajor.majorResponse.MajorResponse;
 import com.java.asms.dtos.dtoYear.requestYear.YearRequest;
 import com.java.asms.dtos.dtoYear.responseYear.YearResponse;
+import com.java.asms.dtos.dtoYearSubject.yearSubjectResponse.YearSubjectResponse;
 import com.java.asms.services.YearService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -114,6 +118,23 @@ public class YearController {
                             .dateTime(LocalDateTime.now())
                             .build());
         }
+    }
+
+    @GetMapping("/getAll/year")
+    public ResponseEntity<APIResponse<Object>> getAllYear(
+            @RequestParam(defaultValue = "0", required = false) Integer pageNo,
+            @RequestParam(defaultValue = "5", required = false) Integer pageSize,
+            @RequestParam(defaultValue = "Id", required = false) String sortBy,
+            @RequestParam(defaultValue = "DESC", required = false) Sort.Direction sortDirection
+    ){
+        List<YearResponse> yearResponseList = yearService.getAllYear(pageNo,pageSize,sortBy,sortDirection);
+        APIResponse<Object> apiResponse = APIResponse.builder()
+                .message("Get all successful .")
+                .payload(yearResponseList)
+                .status(HttpStatus.OK)
+                .dateTime(LocalDateTime.now())
+                .build();
+        return ResponseEntity.ok(apiResponse);
     }
 
 }

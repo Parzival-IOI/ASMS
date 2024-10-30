@@ -8,8 +8,14 @@ import com.java.asms.repositories.DepartmentRepository;
 import com.java.asms.repositories.MajorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -68,4 +74,18 @@ public class MajorService {
         majorRepository.delete(major);
     }
 
+    public List<MajorResponse> getAllMajor(Integer pageNo, Integer pageSize, String sortBy, Sort.Direction sortDirection) {
+        Sort sort = Sort.by(sortDirection, sortBy);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+
+        Page<Major> majorPage = majorRepository.findAll(pageable);
+        List<Major> majorList = majorPage.getContent();
+        List<MajorResponse> majorResponseList = new ArrayList<>();
+        for (Major major: majorList){
+            MajorResponse majorResponse= new MajorResponse();
+            majorResponse.responseMajor(major);
+            majorResponseList.add(majorResponse);
+        }
+        return majorResponseList;
+    }
 }
