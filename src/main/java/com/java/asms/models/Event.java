@@ -30,11 +30,11 @@ public class Event extends BaseEntity {
     private String location;
     private String category;
 
-    @ManyToOne (cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "maker_id", referencedColumnName = "id")
     private User maker;
 
-    @ManyToOne (cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "checker_id", referencedColumnName = "id")
     private User checker;
 }

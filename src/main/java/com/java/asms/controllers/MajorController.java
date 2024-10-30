@@ -7,11 +7,13 @@ import com.java.asms.dtos.dtoMajor.majorResponse.MajorResponse;
 import com.java.asms.services.MajorService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -100,6 +102,23 @@ public class MajorController {
 
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiDeResponse);
         }
+    }
+
+    @GetMapping("/getAll/Major")
+    public ResponseEntity<APIResponse<Object>> getAllMajor(
+            @RequestParam(defaultValue = "0", required = false) Integer pageNo,
+            @RequestParam(defaultValue = "5", required = false) Integer pageSize,
+            @RequestParam(defaultValue = "Id", required = false) String sortBy,
+            @RequestParam(defaultValue = "DESC", required = false) Sort.Direction sortDirection
+    ){
+        List<MajorResponse> majorResponseList = majorService.getAllMajor(pageNo,pageSize,sortBy,sortDirection);
+        APIResponse<Object> apiResponse = APIResponse.builder()
+                .message("Get all major successful .")
+                .payload(majorResponseList)
+                .status(HttpStatus.OK)
+                .dateTime(LocalDateTime.now())
+                .build();
+        return ResponseEntity.ok(apiResponse);
     }
 }
 

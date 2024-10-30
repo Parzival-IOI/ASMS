@@ -12,5 +12,4 @@ import lombok.*;
 public class YearSubjectRequest {
     private long subjectId;
     private long yearId;
-
 }

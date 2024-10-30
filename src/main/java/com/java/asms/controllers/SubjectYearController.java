@@ -7,11 +7,13 @@ import com.java.asms.dtos.dtoYearSubject.yearSubjectResponse.YearSubjectResponse
 import com.java.asms.services.SubjectYearService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -80,7 +82,6 @@ public class SubjectYearController {
         }
     }
 
-
     @DeleteMapping("/delete/subject-yearBy/{id}")
     public ResponseEntity<APIDeResponse> deleteSubjectYearById(@PathVariable long id) {
         try {
@@ -101,5 +102,20 @@ public class SubjectYearController {
         }
     }
 
-
+    @GetMapping("/getAll/subject-year")
+    public ResponseEntity<APIResponse<Object>> getAllSubjectYear(
+            @RequestParam(defaultValue = "0", required = false) Integer pageNo,
+            @RequestParam(defaultValue = "5", required = false) Integer pageSize,
+            @RequestParam(defaultValue = "Id", required = false) String sortBy,
+            @RequestParam(defaultValue = "DESC", required = false) Sort.Direction sortDirection
+    ){
+        List<YearSubjectResponse> yearSubjectResponses = subjectYearService.getAllSubjectYear(pageNo,pageSize,sortBy,sortDirection) ;
+        APIResponse<Object> apiResponse = APIResponse.builder()
+                .message("Get all successful .")
+                .payload(yearSubjectResponses)
+                .status(HttpStatus.OK)
+                .dateTime(LocalDateTime.now())
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
 }

@@ -8,12 +8,14 @@ import com.java.asms.models.Department;
 import com.java.asms.services.DepartmentService;
 import com.java.asms.utils.ResException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/department")
@@ -22,58 +24,9 @@ import java.time.LocalDateTime;
 public class DepartmentController {
     private final DepartmentService departmentService;
 
-//    @GetMapping("/findOne")
-//    public ResponseEntity<?> findOneDepartment(@RequestBody long id) {
-//        try {
-//            Department department = departmentService.findOne(id);
-//            return new ResponseEntity<>(department, HttpStatus.OK);
-//        } catch (ResException ex) {
-//            return new ResponseEntity<>(ex.getMessage(), ex.getCode());
-//        } catch (Exception ex) {
-//            return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
-//    @PutMapping("/update")
-//    public ResponseEntity<?> updateDepartment(@RequestBody Department department) {
-//        try {
-//            departmentService.update(department);
-//            return new ResponseEntity<>("success", HttpStatus.OK);
-//        } catch (ResException ex) {
-//            return new ResponseEntity<>(ex.getMessage(), ex.getCode());
-//        } catch (Exception ex) {
-//            return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
-//    @DeleteMapping("/delete")
-//    public ResponseEntity<?> deleteDepartment(@RequestBody long id) {
-//        try {
-//            departmentService.delete(id);
-//            return new ResponseEntity<>("success", HttpStatus.OK);
-//        } catch (ResException ex) {
-//            return new ResponseEntity<>(ex.getMessage(), ex.getCode());
-//        } catch (Exception ex) {
-//            return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
-//    @PostMapping("/save")
-//    public ResponseEntity<?> saveDepartment(@RequestBody DepartmentRequest department) {
-//        try {
-//            departmentService.insert(department);
-//            return new ResponseEntity<>("success", HttpStatus.OK);
-//        } catch (ResException ex) {
-//            return new ResponseEntity<>(ex.getMessage(), ex.getCode());
-//        } catch (Exception ex) {
-//            return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
     @PostMapping("/create/department")
     public ResponseEntity<APIResponse<Object>> createDepartment(@RequestBody DepartmentRequest departmentRequest) {
         DepartmentResponse departmentResponse = departmentService.createDepartment(departmentRequest);
-
         APIResponse<Object> apiResponse = APIResponse.builder()
                 .message("Created department successfully.")
                 .payload(departmentResponse)
@@ -85,41 +38,87 @@ public class DepartmentController {
     }
 
     @GetMapping("/get/departmentBy/{id}")
-    public ResponseEntity<APIResponse<Object>> getDepartmentById(@PathVariable long id){
-        DepartmentResponse getDepartmentId = departmentService.getDepartmentById(id);
-        APIResponse<Object> apiResponse = APIResponse.builder()
-                .message("Get department ID "+ id +" successful.")
-                .payload(getDepartmentId)
-                .status(HttpStatus.OK)
-                .dateTime(LocalDateTime.now())
-                .build();
-        return ResponseEntity.ok(apiResponse);
+    public ResponseEntity<APIResponse<Object>> getDepartmentById(@PathVariable long id) {
+        try {
+            DepartmentResponse getDepartmentId = departmentService.getDepartmentById(id);
+            APIResponse<Object> apiResponse = APIResponse.builder()
+                    .message("Get department ID " + id + " successful.")
+                    .payload(getDepartmentId)
+                    .status(HttpStatus.OK)
+                    .dateTime(LocalDateTime.now())
+                    .build();
+            return ResponseEntity.ok(apiResponse);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(APIResponse.builder()
+                            .message("Failed to get department: " + e.getMessage())
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .dateTime(LocalDateTime.now())
+                            .build());
+        }
     }
 
     @PutMapping("/update/departmentBy/{id}")
     public ResponseEntity<APIResponse<Object>> updateDepartmentById(
             @PathVariable long id,
-            @RequestBody DepartmentRequest departmentRequest){
-            DepartmentResponse departmentResponse = departmentService.updateDepartmentById(id,departmentRequest);
+            @RequestBody DepartmentRequest departmentRequest) {
+        try {
+            DepartmentResponse departmentResponse = departmentService.updateDepartmentById(id, departmentRequest);
             APIResponse<Object> apiResponse = APIResponse.builder()
-                    .message("Updated department by "+ id +"successful.")
+                    .message("Updated department by " + id + " successful.")
                     .payload(departmentResponse)
                     .status(HttpStatus.OK)
                     .dateTime(LocalDateTime.now())
                     .build();
             return ResponseEntity.ok(apiResponse);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(APIResponse.builder()
+                            .message("Failed to update department: " + e.getMessage())
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .dateTime(LocalDateTime.now())
+                            .build());
+        }
     }
 
     @DeleteMapping("/delete/departmentBy/{id}")
-    public ResponseEntity<APIDeResponse> deleteDepartmentById(@PathVariable long id){
-        departmentService.deleteDepartmentById(id);
-        APIDeResponse apiDeResponse = APIDeResponse.builder()
-                .message("Deleted department by id "+ id +" successful.")
+    public ResponseEntity<APIDeResponse> deleteDepartmentById(@PathVariable long id) {
+        try {
+            departmentService.deleteDepartmentById(id);
+            APIDeResponse apiDeResponse = APIDeResponse.builder()
+                    .message("Deleted department by id " + id + " successful.")
+                    .status(HttpStatus.OK)
+                    .dateTime(LocalDateTime.now())
+                    .build();
+            return ResponseEntity.accepted().body(apiDeResponse);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(APIDeResponse.builder()
+                            .message("Failed to delete department: " + e.getMessage())
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .dateTime(LocalDateTime.now())
+                            .build());
+        }
+    }
+
+    @GetMapping("/getAll/department")
+    public ResponseEntity<APIResponse<Object>> getAllDepartment(
+            @RequestParam(defaultValue = "0", required = false) Integer pageNo,
+            @RequestParam(defaultValue = "5", required = false) Integer pageSize,
+            @RequestParam(defaultValue = "id", required = false) String sortBy,
+            @RequestParam(defaultValue = "DESC", required = false) Sort.Direction sortDirection
+    ){
+
+        List<DepartmentResponse> departmentResponseList =
+                departmentService.getAllDepartment(pageNo,pageSize,sortBy,sortDirection);
+        APIResponse<Object> apiResponse = APIResponse.builder()
+                .message("Get all customer successful .")
+                .payload(departmentResponseList)
                 .status(HttpStatus.OK)
                 .dateTime(LocalDateTime.now())
                 .build();
-        return ResponseEntity.accepted().body(apiDeResponse);
-    }
+        return ResponseEntity.ok(apiResponse);
 
+    }
 
 }
