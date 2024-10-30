@@ -34,15 +34,15 @@ public class TransactionStudentYear extends BaseEntity {
     @Column(name = "student_id")
     private long studentId;
 
-    @ManyToOne (cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "maker_id", referencedColumnName = "id")
     private User maker;
 
-    @ManyToOne (cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "checker_id", referencedColumnName = "id")
     private User checker;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "student_year_id", referencedColumnName = "id")
     private StudentYear studentYear;
 }

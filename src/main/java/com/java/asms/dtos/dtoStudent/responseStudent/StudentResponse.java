@@ -1,6 +1,7 @@
 package com.java.asms.dtos.dtoStudent.responseStudent;
 
 import com.java.asms.enums.StudentStatus;
+import com.java.asms.models.Student;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,5 +24,18 @@ public class StudentResponse {
     private String email;
     private String guardianPhone;
     private String parentPhone;
+    public void responseStudent(Student student) {
+        this.id = student.getId();
+        this.firstName = student.getFirstName();
+        this.lastName = student.getLastName();
+        this.dob = student.getDob();
+        this.studentStatus = student.getStudentStatus();
+        this.address = student.getAddress();
+        this.phone = student.getPhone();
+        this.email = student.getEmail();
+        this.guardianPhone = student.getGuardianPhone();
+        this.parentPhone = student.getParentPhone();
+    }
+
 
 }
