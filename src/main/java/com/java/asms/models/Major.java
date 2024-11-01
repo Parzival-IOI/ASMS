@@ -26,7 +26,7 @@ import lombok.Setter;
 @Setter
 public class Major extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
     private String price;

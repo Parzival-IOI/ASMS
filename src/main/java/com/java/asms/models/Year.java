@@ -29,7 +29,7 @@ import lombok.Setter;
 @Setter
 public class Year extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
     @Column(name = "student_number")

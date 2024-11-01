@@ -23,7 +23,7 @@ import lombok.Setter;
 @Setter
 public class Department extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
 

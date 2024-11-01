@@ -15,12 +15,26 @@ public class UserResponse {
     private long id;
     private String firstName;
     private String lastName;
+    private String username;
     private Date dob;
     private UserRole role;
     private String phone;
     private String email;
     private String nationalId;
     private String address;
+    public void responseUser(User user, String username) {
+        this.id = user.getId();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.username = username;
+        this.dob = user.getDob();
+        this.role = user.getRole();
+        this.phone = user.getPhone();
+        this.email = user.getEmail();
+        this.nationalId = user.getNationalId();
+        this.address = user.getAddress();
+    }
+
     public void responseUser(User user) {
         this.id = user.getId();
         this.firstName = user.getFirstName();

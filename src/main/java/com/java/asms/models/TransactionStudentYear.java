@@ -24,7 +24,7 @@ import lombok.Setter;
 @Setter
 public class TransactionStudentYear extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(name = "transaction_id")
     private String transactionID;

@@ -27,7 +27,7 @@ import lombok.Setter;
 @Setter
 public class Generation extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "generation_status")

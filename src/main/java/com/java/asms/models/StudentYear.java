@@ -27,7 +27,7 @@ import lombok.Setter;
 @Setter
 public class StudentYear extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(name = "is_paid")
     private Boolean isPaid;

@@ -15,6 +15,8 @@ import java.util.Date;
 public class StudentRequest {
     private String firstName;
     private String lastName;
+    private String username;
+    private String password;
     private Date dob;
     private StudentStatus studentStatus;
     private String address;

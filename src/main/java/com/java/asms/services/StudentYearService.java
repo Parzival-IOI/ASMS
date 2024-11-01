@@ -31,7 +31,7 @@ public class StudentYearService {
         Classroom classroom = classroomRepository.findById((int) studentYearRequest.getClassroomId())
                 .orElseThrow(() -> new RuntimeException("Classroom not found with ID: " + studentYearRequest.getClassroomId()));
 
-        Student student = studentRepository.findById((int) studentYearRequest.getStudentId())
+        Student student = studentRepository.findById(studentYearRequest.getStudentId())
                 .orElseThrow(() -> new RuntimeException("Student not found with ID: " + studentYearRequest.getStudentId()));
 
         Year year = yearRepository.findById((int) studentYearRequest.getYearId())
@@ -68,7 +68,7 @@ public class StudentYearService {
         Classroom classroom = classroomRepository.findById((int) studentYearRequest.getClassroomId())
                 .orElseThrow(() -> new RuntimeException("Classroom not found with ID: " + studentYearRequest.getClassroomId()));
 
-        Student student = studentRepository.findById((int) studentYearRequest.getStudentId())
+        Student student = studentRepository.findById(studentYearRequest.getStudentId())
                 .orElseThrow(() -> new RuntimeException("Student not found with ID: " + studentYearRequest.getStudentId()));
 
         Year year = yearRepository.findById((int) studentYearRequest.getYearId())
