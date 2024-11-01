@@ -39,7 +39,7 @@ public class RegisterYearService {
         registerYear.setScore(registerYearRequest.getScore());
         registerYear.setIsPassed(registerYearRequest.getIsPassed());
 
-        Student student = studentRepository.findById((int) registerYearRequest.getStudentId())
+        Student student = studentRepository.findById(registerYearRequest.getStudentId())
                 .orElseThrow(() -> new RuntimeException("Student with ID " + registerYearRequest.getStudentId() + " not found."));
         Year year = yearRepository.findById((int) registerYearRequest.getYearId())
                 .orElseThrow(() -> new RuntimeException("Year with ID " + registerYearRequest.getYearId() + " not found."));
@@ -166,7 +166,7 @@ public class RegisterYearService {
         registerYear.setScore(registerYearRequest.getScore());
         registerYear.setIsPassed(registerYearRequest.getIsPassed());
 
-        Student student = studentRepository.findById((int) registerYearRequest.getStudentId())
+        Student student = studentRepository.findById(registerYearRequest.getStudentId())
                 .orElseThrow(() -> new RuntimeException("Student with ID " + registerYearRequest.getStudentId() + " not found."));
         registerYear.setStudent(student);
 

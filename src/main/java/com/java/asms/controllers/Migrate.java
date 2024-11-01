@@ -34,8 +34,8 @@ public class Migrate {
             return new ResponseEntity<>("Already Migrated", HttpStatus.BAD_REQUEST);
 
         User admin = User.builder()
-                .firstName("Vichhai")
-                .lastName("IOI")
+                .firstName("test")
+                .lastName("1")
                 .role(UserRole.ADMIN)
                 .dob(new Date())
                 .phone("000000000")

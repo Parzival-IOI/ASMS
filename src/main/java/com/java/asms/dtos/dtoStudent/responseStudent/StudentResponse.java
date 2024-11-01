@@ -3,6 +3,7 @@ package com.java.asms.dtos.dtoStudent.responseStudent;
 import com.java.asms.enums.StudentStatus;
 import com.java.asms.models.Student;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,10 +14,12 @@ import java.util.Date;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class StudentResponse {
     private long id;
     private String firstName;
     private String lastName;
+    private String username;
     private Date dob;
     private StudentStatus studentStatus;
     private String address;
@@ -24,6 +27,20 @@ public class StudentResponse {
     private String email;
     private String guardianPhone;
     private String parentPhone;
+    public void responseStudent(Student student, String username) {
+        this.id = student.getId();
+        this.firstName = student.getFirstName();
+        this.lastName = student.getLastName();
+        this.dob = student.getDob();
+        this.username = username;
+        this.studentStatus = student.getStudentStatus();
+        this.address = student.getAddress();
+        this.phone = student.getPhone();
+        this.email = student.getEmail();
+        this.guardianPhone = student.getGuardianPhone();
+        this.parentPhone = student.getParentPhone();
+    }
+
     public void responseStudent(Student student) {
         this.id = student.getId();
         this.firstName = student.getFirstName();
@@ -36,6 +53,5 @@ public class StudentResponse {
         this.guardianPhone = student.getGuardianPhone();
         this.parentPhone = student.getParentPhone();
     }
-
 
 }
