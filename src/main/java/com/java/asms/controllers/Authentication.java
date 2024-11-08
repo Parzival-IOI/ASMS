@@ -46,4 +46,16 @@ public class Authentication {
         }
     }
 
+    @PostMapping("logout")
+    public ResponseEntity<?> logout(@AuthenticationPrincipal Jwt jwt) {
+        try {
+            authenticationService.logout(jwt);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (ResException ex) {
+            return new ResponseEntity<>(ex.getMessage(), ex.getCode());
+        } catch (Exception ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

@@ -92,22 +92,30 @@ public class StudentService {
         student.setParentPhone(studentRequest.getParentPhone());
         student.setStudentStatus(studentRequest.getStudentStatus());
 
+        Student saved = studentRepository.save(student);
 
+        Login login = loginRepository.findById(saved.getLogin().getId())
+                .orElseThrow(() -> new RuntimeException("Login with id " + id + " not found."));
 
-        Login login = student.getLogin();
         login.setUsername(studentRequest.getUsername());
         if(!studentRequest.getPassword().isEmpty()) {
             login.setPassword(new BCryptPasswordEncoder().encode(studentRequest.getPassword()));
         }
-
         loginRepository.save(login);
 
-        studentRepository.save(student);
-
-        Student saved2 = studentRepository.findById(student.getId())
-                .orElseThrow(() -> new RuntimeException("Student with id " + student.getId() + " not found"));
-
-        return studentResponseMapping(saved2);
+        return StudentResponse.builder()
+                .id(saved.getId())
+                .firstName(saved.getFirstName())
+                .lastName(saved.getLastName())
+                .username(login.getUsername())
+                .dob(saved.getDob())
+                .email(saved.getEmail())
+                .address(saved.getAddress())
+                .phone(saved.getPhone())
+                .guardianPhone(saved.getGuardianPhone())
+                .parentPhone(saved.getParentPhone())
+                .studentStatus(saved.getStudentStatus())
+                .build();
     }
 
     public void deleteStudentById(long id) {

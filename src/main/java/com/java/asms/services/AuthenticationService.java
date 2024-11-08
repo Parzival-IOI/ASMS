@@ -10,6 +10,7 @@ import java.security.Principal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -167,4 +168,11 @@ public class AuthenticationService {
         throw new ResException("User Not Found", HttpStatus.NOT_FOUND);
     }
 
+    public void logout(Jwt jwt) throws Exception {
+        Login login = loginRepository.findByUsername(jwt.getSubject())
+                .orElseThrow(() -> new ResException("User Not Found", HttpStatus.NOT_FOUND));
+
+        login.setRefreshToken(null);
+        loginRepository.save(login);
+    }
 }
