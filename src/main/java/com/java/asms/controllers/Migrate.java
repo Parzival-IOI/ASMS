@@ -25,7 +25,7 @@ public class Migrate {
     private final LoginRepository loginRepository;
     private final UserRepository userRepository;
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin")
     public ResponseEntity<?> migrate() {
         Optional<Login> login = loginRepository.findByUsername("Parzival");
