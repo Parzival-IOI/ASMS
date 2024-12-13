@@ -58,4 +58,9 @@ public class Authentication {
         }
     }
 
+    @PostMapping("connection")
+    public ResponseEntity<?> connection() {
+        return new ResponseEntity<>("sure I'm ok to go", HttpStatus.OK);
+    }
+
 }
